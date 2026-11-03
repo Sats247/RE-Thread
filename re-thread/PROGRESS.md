@@ -153,3 +153,62 @@
 
 ### Known Issues
 - None.
+
+---
+
+## Phase 4 — Home, Browse, Search
+
+### Status: ✅ Complete
+
+### Files Created
+- [x] `src/features/catalog/hooks/useSearchParamUpdater.ts`: Low-level URL `URLSearchParams` updater helpers (set, toggle array, remove)
+- [x] `src/features/catalog/hooks/useCatalogFilters.ts`: URL-synced filter/sort/page state hook; survives reload and back-button; builds `SearchParams` payload for the catalog service
+- [x] `src/features/catalog/components/OffersStrip.tsx`: Horizontal scrollable coupon chips with clipboard copy + toast confirmation
+- [x] `src/features/catalog/components/SearchBar.tsx`: Full search bar with category/locality dropdowns, keyword suggestions popover, clear button, camera icon (triggers ImageSearchModal)
+- [x] `src/features/catalog/components/ImageSearchModal.tsx`: Drag-and-drop / upload modal; 1.5s simulated analysis; displays 6 matched garment cards; sample looks for demo
+- [x] `src/features/catalog/components/ForYouSection.tsx`: Activity-driven carousel; reads `activity.store` signals (viewedCategories/Brands/Occasions); falls back to trending; shows "Because you viewed ..." captions
+- [x] `src/features/catalog/components/OccasionChipsRow.tsx`: Scrollable row of all 21 occasions; navigates to `/browse?occasion=X` or calls `onSelect` callback
+- [x] `src/features/catalog/components/BundlesSection.tsx`: Cards from `catalog.getBundles()` with combo price and savings badge
+- [x] `src/features/catalog/components/NearYouSection.tsx`: Hyperlocal listings grid; locality tab switcher (5 localities); links to filtered `/browse`
+- [x] `src/features/catalog/components/TopSellersSection.tsx`: Top-rated verified sellers fetched from `seller.topSellers()` with rating, sales count, verification badge
+- [x] `src/features/catalog/components/FilterChip.tsx`: `FilterChip` (single removable chip) + `ArrayFilterChips` (renders one chip per item in an array filter)
+- [x] `src/features/catalog/components/ActiveFilterChips.tsx`: Renders all active filter chips with individual remove buttons and "Clear All"
+- [x] `src/features/catalog/components/SortSelect.tsx`: Sort dropdown with all 6 sort options; dispatches via `useCatalogFilters`
+- [x] `src/features/catalog/components/BrowseFacetFilters.tsx`: Sizes (chips), conditions (checkboxes), brands (searchable checkboxes)
+- [x] `src/features/catalog/components/BrowseFilterControls.tsx`: Full filter panel (mode, department, trust/policy, price range, facets, locality); composable into sidebar or sheet
+- [x] `src/features/catalog/components/BrowseFiltersSidebar.tsx`: Desktop-only `lg:block` sidebar wrapper around `BrowseFilterControls`
+- [x] `src/features/catalog/components/BrowseFiltersSheet.tsx`: Mobile BottomSheet wrapper with "Show N results" apply button
+- [x] `src/features/catalog/pages/HomePage.tsx` (`/home`): Full authenticated home feed — search bar, offers strip, For You carousel, category tiles, occasion chips, trending, bundles, rent spotlight, near you, top sellers
+- [x] `src/features/catalog/pages/BrowsePage.tsx` (`/browse`, `/browse/:category`): Full catalog grid with URL-synced filters, sidebar (desktop), bottom sheet (mobile), active chips, sort, load-more
+- [x] `src/features/catalog/pages/SearchPage.tsx` (`/search`): Inline search bar, same filter/sort/chips as browse, results grid
+- [x] `src/app/router.tsx`: Replaced PlaceholderPages for `/home`, `/browse`, `/browse/:category`, `/search` with lazy-loaded real pages
+- [x] `src/services/contracts/seller.contract.ts`: Added `topSellers()` method
+- [x] `src/services/mock/seller.mock.ts`: Implemented `getProfile()` and `topSellers()` with real DB reads
+- [x] `src/services/mock/catalog.mock.ts`: Improved `forYou()` with scoring by top category/brand + `similarByImage()` with filename-based mock matching
+- [x] `src/config/constants.ts`: Added `BENGALURU_LOCALITIES` and `ALL_OCCASIONS` as const arrays
+- [x] `src/shared/ui/Badge.tsx`: Added `size?: 'sm' | 'md'` prop
+
+### Acceptance Criteria Verification
+- [x] Every filter (category, mode, brand, size, condition, occasion, price, locality, verified, returnable) works on both `/browse` and `/search`
+- [x] All filters and sort survive browser reload and back-button (stored in URL query string via `useSearchParams`)
+- [x] "For You" carousel shows "Because you viewed X" captions driven by `activity.store`; falls back to trending when no activity
+- [x] Image search modal: upload or sample → 1.5s analysis → 6 matching garment cards
+- [x] Occasion chips row navigates to filtered browse on click
+- [x] Near You section filters by Bengaluru locality with tab switcher
+- [x] Top sellers section renders rated & verified sellers from seed data
+- [x] All files ≤ 200 lines; no `any`, no `@ts-ignore`
+- [x] `npm run test` passed (14/14 tests)
+- [x] `npm run typecheck` passed (0 errors)
+- [x] `npm run lint` passed (0 errors, 0 warnings)
+- [x] `npm run build` passed (clean production build, ~3.2s, 23 code-split chunks)
+
+### Assumptions
+- Occasion chip row and filter sheet include all 21 occasions from `ALL_OCCASIONS` constant (not subset).
+- "Load More" appends to the same page rather than replacing (accumulating pattern).
+- `catalog.forYou()` re-ranks by top viewed category/brand so carousel ordering reflects strongest signals.
+- `seller.topSellers()` sorts by composite `ratingAvg × salesCount` score, returning top 6.
+- `similarByImage()` matches by filename substring against category/type/color/brand — sufficient for demo purposes.
+
+### Known Issues
+- None.
+

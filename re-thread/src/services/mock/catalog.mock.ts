@@ -141,23 +141,50 @@ export const catalogMock: CatalogContract = {
   async forYou(activity: ActivitySignals): Promise<Listing[]> {
     await simulateLatency();
     const listings = (db.get<Listing[]>('listings') ?? []).filter((l) => l.status === 'live');
-    if (!activity.viewedCategories.length && !activity.viewedBrands.length) {
+    const hasCategory = activity.viewedCategories.length > 0;
+    const hasBrand = activity.viewedBrands.length > 0;
+    const hasOccasion = activity.viewedOccasions.length > 0;
+
+    if (!hasCategory && !hasBrand && !hasOccasion) {
       return [...listings].sort((a, b) => b.popularity - a.popularity).slice(0, 8);
     }
-    return listings
-      .filter(
-        (l) =>
-          activity.viewedCategories.includes(l.category) ||
-          activity.viewedBrands.includes(l.brand) ||
-          l.occasions.some((o) => activity.viewedOccasions.includes(o))
-      )
-      .slice(0, 8);
+
+    const matched = listings.filter(
+      (l) =>
+        (hasCategory && activity.viewedCategories.includes(l.category)) ||
+        (hasBrand && activity.viewedBrands.includes(l.brand)) ||
+        (hasOccasion && l.occasions.some((o) => activity.viewedOccasions.includes(o)))
+    );
+
+    if (matched.length > 0) {
+      const topCat = activity.viewedCategories[0];
+      const topBrand = activity.viewedBrands[0];
+      matched.sort((a, b) => {
+        const aScore = (a.category === topCat ? 2 : 0) + (a.brand === topBrand ? 3 : 0);
+        const bScore = (b.category === topCat ? 2 : 0) + (b.brand === topBrand ? 3 : 0);
+        return bScore - aScore;
+      });
+      return matched.slice(0, 8);
+    }
+
+    return [...listings].sort((a, b) => b.popularity - a.popularity).slice(0, 8);
   },
 
-  async similarByImage(_file: File): Promise<Listing[]> {
+  async similarByImage(file: File): Promise<Listing[]> {
     await simulateLatency();
     const listings = (db.get<Listing[]>('listings') ?? []).filter((l) => l.status === 'live');
-    return listings.slice(0, 4);
+    const name = file.name.toLowerCase();
+    const matched = listings.filter(
+      (l) =>
+        name.includes(l.category) ||
+        name.includes(l.type) ||
+        name.includes(l.color.toLowerCase()) ||
+        name.includes(l.brand.toLowerCase())
+    );
+    if (matched.length >= 2) {
+      return matched.slice(0, 6);
+    }
+    return listings.slice(0, 6);
   },
 
   async relatedTo(id: string): Promise<Listing[]> {

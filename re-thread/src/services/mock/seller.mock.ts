@@ -1,6 +1,8 @@
 import { AppError } from '@/shared/types';
 import type { SellerContract, SellerDashboard, EarningsSummary, ReturnDecision } from '../contracts/seller.contract';
 import type { SellerProfile, Listing, Order, RentalBooking } from '@/shared/types';
+import { simulateLatency } from './latency';
+import { db } from './db';
 
 export const sellerMock: SellerContract = {
   async dashboard(): Promise<SellerDashboard> {
@@ -27,8 +29,12 @@ export const sellerMock: SellerContract = {
   async earnings(): Promise<EarningsSummary> {
     throw new AppError('not-implemented', 'earnings not implemented');
   },
-  async getProfile(_id: string): Promise<SellerProfile> {
-    throw new AppError('not-implemented', 'getProfile not implemented');
+  async getProfile(id: string): Promise<SellerProfile> {
+    await simulateLatency();
+    const sellers = db.get<SellerProfile[]>('sellers') ?? [];
+    const seller = sellers.find((s) => s.id === id || s.userId === id);
+    if (!seller) throw new AppError('not-found', `Seller ${id} not found.`);
+    return seller;
   },
   async updateStore(_data: Partial<SellerProfile['store']>): Promise<SellerProfile> {
     throw new AppError('not-implemented', 'updateStore not implemented');
@@ -36,4 +42,12 @@ export const sellerMock: SellerContract = {
   async applyForVerification(): Promise<void> {
     throw new AppError('not-implemented', 'applyForVerification not implemented');
   },
+  async topSellers(): Promise<SellerProfile[]> {
+    await simulateLatency();
+    const sellers = db.get<SellerProfile[]>('sellers') ?? [];
+    return [...sellers]
+      .sort((a, b) => b.ratingAvg * b.salesCount - a.ratingAvg * a.salesCount)
+      .slice(0, 6);
+  },
 };
+

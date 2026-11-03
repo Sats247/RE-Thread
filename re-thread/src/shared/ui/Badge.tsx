@@ -6,6 +6,7 @@ export type BadgeVariant = 'ok' | 'warn' | 'danger' | 'mist' | 'ink' | 'sale' | 
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
+  size?: 'sm' | 'md';
   pill?: boolean;
   icon?: React.ReactNode;
   'data-testid'?: string;
@@ -14,6 +15,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 export const Badge: React.FC<BadgeProps> = ({
   className,
   variant = 'mist',
+  size = 'md',
   pill = false,
   icon,
   children,
@@ -28,6 +30,11 @@ export const Badge: React.FC<BadgeProps> = ({
     ink: 'bg-ink text-paper border border-ink',
     sale: 'bg-sale text-paper border border-sale',
     verified: 'bg-blue-50 text-blue-700 border border-blue-200',
+  };
+
+  const sizes = {
+    sm: 'px-1.5 py-px text-[10px]',
+    md: 'px-2 py-0.5 text-[11px]',
   };
 
   const defaultIcon = () => {
@@ -52,7 +59,8 @@ export const Badge: React.FC<BadgeProps> = ({
     <span
       data-testid={testId}
       className={cn(
-        'inline-flex items-center px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider',
+        'inline-flex items-center font-medium uppercase tracking-wider',
+        sizes[size],
         pill ? 'rounded-full' : 'rounded-none',
         variants[variant],
         className

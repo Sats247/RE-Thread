@@ -16,6 +16,15 @@ const AuthPage = React.lazy(
 const KitchenSinkPage = React.lazy(
   () => import('@/features/catalog/pages/KitchenSinkPage')
 );
+const HomePage = React.lazy(
+  () => import('@/features/catalog/pages/HomePage')
+);
+const BrowsePage = React.lazy(
+  () => import('@/features/catalog/pages/BrowsePage')
+);
+const SearchPage = React.lazy(
+  () => import('@/features/catalog/pages/SearchPage')
+);
 
 export const router = createBrowserRouter([
   {
@@ -38,10 +47,38 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
-      { path: ROUTES.USER_HOME, element: <PlaceholderPage name="Home Feed" /> },
-      { path: ROUTES.BROWSE, element: <PlaceholderPage name="Browse Catalog" /> },
-      { path: ROUTES.BROWSE_CATEGORY, element: <PlaceholderPage name="Browse Category" /> },
-      { path: ROUTES.SEARCH, element: <PlaceholderPage name="Search Results" /> },
+      {
+        path: ROUTES.USER_HOME,
+        element: (
+          <Suspense fallback={<PageSkeleton />}>
+            <HomePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: ROUTES.BROWSE,
+        element: (
+          <Suspense fallback={<PageSkeleton />}>
+            <BrowsePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: ROUTES.BROWSE_CATEGORY,
+        element: (
+          <Suspense fallback={<PageSkeleton />}>
+            <BrowsePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: ROUTES.SEARCH,
+        element: (
+          <Suspense fallback={<PageSkeleton />}>
+            <SearchPage />
+          </Suspense>
+        ),
+      },
       { path: ROUTES.PRODUCT, element: <PlaceholderPage name="Product Detail" /> },
       { path: ROUTES.RENT, element: <PlaceholderPage name="Rent Feed" /> },
       { path: ROUTES.RENT_DETAIL, element: <PlaceholderPage name="Rental Detail" /> },

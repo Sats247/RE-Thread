@@ -38,4 +38,5 @@ export interface SellerContract {
   getProfile(id: string): Promise<SellerProfile>;
   updateStore(data: Partial<SellerProfile['store']>): Promise<SellerProfile>;
   applyForVerification(): Promise<void>;
+  topSellers(): Promise<SellerProfile[]>;
 }

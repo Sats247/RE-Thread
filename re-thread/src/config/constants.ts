@@ -54,3 +54,43 @@ export const COURIER_CHARGE = COURIER_CHARGE_FLAT;
 
 /** LocalStorage key prefix */
 export const LS_PREFIX = 'rt:';
+
+/** Bengaluru localities list */
+export const BENGALURU_LOCALITIES = [
+  'Indiranagar',
+  'Koramangala',
+  'HSR Layout',
+  'Jayanagar',
+  'Malleshwaram',
+  'Whitefield',
+  'JP Nagar',
+  'Basavanagudi',
+  'Electronic City',
+  'Rajajinagar',
+] as const;
+
+/** Canonical list of all occasion tags */
+export const ALL_OCCASIONS = [
+  'daily',
+  'brunch',
+  'resort',
+  'lounge',
+  'weekend-getaway',
+  'travel',
+  'gym',
+  'vacation',
+  'yoga',
+  'birthday',
+  'club',
+  'date',
+  'summer',
+  'winter',
+  'autumn',
+  'monsoon',
+  'college',
+  'party',
+  'wedding',
+  'festive',
+  'formal',
+] as const;
+
