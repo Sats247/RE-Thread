@@ -1,0 +1,11 @@
+export { authMock as auth } from './mock/auth.mock';
+export { catalogMock as catalog } from './mock/catalog.mock';
+export { offersMock as offers } from './mock/offers.mock';
+export { ordersMock as orders } from './mock/orders.mock';
+export { rentalsMock as rentals } from './mock/rentals.mock';
+export { aiCheckMock as aiCheck } from './mock/aiCheck.mock';
+export { sellingMock as selling } from './mock/selling.mock';
+export { sellerMock as seller } from './mock/seller.mock';
+export { supportMock as support } from './mock/support.mock';
+export { adminMock as admin } from './mock/admin.mock';
+export { db, initDb } from './mock/db';
